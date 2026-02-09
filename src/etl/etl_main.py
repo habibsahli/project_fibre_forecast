@@ -152,7 +152,7 @@ class ETLPipeline:
             logger.info("=" * 70)
             
             loading = LoadingPipeline(self.db_manager)
-            loading_log = loading.execute(self.transformed_data)
+            loading_log = loading.execute(self.extracted_data, self.transformed_data)
             
             self.execution_log['loading'] = loading_log
             

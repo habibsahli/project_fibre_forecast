@@ -1,6 +1,6 @@
 # Fibre Data ETL Pipeline
 
-A complete Extract-Transform-Load (ETL) pipeline for telecommunications fiber optic subscription data, designed for Ooredoo Tunisia.
+A complete Extract-Transform-Load (ETL) pipeline for telecommunications fiber optic subscription data.
 
 ## 📋 Overview
 
@@ -70,6 +70,53 @@ dim_offres  dim_geo  dim_dealers  fact_abonnements
 2. **Execute Pipeline**
    ```bash
    make run
+   ```
+
+3. **Auto-run on new files (recommended for continuous ingestion)**
+   ```bash
+   # Install watcher dependency (Linux)
+   sudo apt-get install inotify-tools
+
+   # Start the watcher
+   make watch
+   ```
+   The watcher monitors `data/landing/` and triggers the ETL whenever a new CSV
+   file is added or moved into the folder.
+
+   To debounce rapid file drops (default 10 seconds):
+   ```bash
+   DEBOUNCE_SECONDS=15 make watch
+   ```
+
+   Email notification on launch (requires `mail` or `sendmail` installed):
+   ```bash
+   NOTIFY_EMAIL=habib.sahli@esprit.tn make watch
+   ```
+   
+   **Email Setup Options:**
+   
+   1. **Local Mail Server (Recommended for servers):**
+      ```bash
+      sudo apt-get install postfix mailutils
+      NOTIFY_EMAIL=your.email@domain.com make watch
+      ```
+   
+   2. **External SMTP (Gmail, Outlook, etc):**
+      ```bash
+      export SMTP_SERVER=smtp.gmail.com
+      export SMTP_PORT=587
+      export SMTP_USER=your.email@gmail.com
+      export SMTP_PASSWORD=your_app_password
+      export NOTIFY_EMAIL=recipient@domain.com
+      make watch
+      ```
+   
+   You can also customize sender and subject prefix:
+   ```bash
+   NOTIFY_EMAIL=habib.sahli@esprit.tn \
+   FROM_EMAIL=ETL-notify@local \
+   SUBJECT_PREFIX="ETL Launch" \
+   make watch
    ```
 
 3. **Check Results**

@@ -1,4 +1,8 @@
-.PHONY: help install setup up down logs clean test run validate docker-setup env-setup
+.PHONY: help install setup up down logs clean test run validate docker-setup env-setup watch
+
+VENV_DIR := .venv
+PYTHON_BIN := $(VENV_DIR)/bin/python
+PIP_BIN := $(VENV_DIR)/bin/pip
 
 # Default target
 help:
@@ -15,6 +19,7 @@ help:
 	@echo "  make up               - Start Docker services"
 	@echo "  make down             - Stop Docker services"
 	@echo "  make run              - Execute ETL pipeline"
+	@echo "  make watch            - Watch landing/ and auto-run ETL"
 	@echo "  make validate         - Validate configuration"
 	@echo ""
 	@echo "Maintenance:"
@@ -46,7 +51,11 @@ docker-setup: env-setup
 
 install:
 	@echo "Installing Python dependencies..."
-	pip install psycopg2-binary pandas numpy
+	@if [ ! -d "$(VENV_DIR)" ]; then \
+		python3 -m venv $(VENV_DIR); \
+	fi
+	$(PYTHON_BIN) -m pip install --upgrade pip
+	$(PIP_BIN) install psycopg2-binary pandas numpy
 	@echo "✓ Dependencies installed"
 
 setup: env-setup install docker-setup
@@ -67,11 +76,15 @@ down:
 
 run:
 	@echo "Starting ETL Pipeline..."
-	cd src/etl && python3 etl_main.py
+	$(PYTHON_BIN) src/etl/etl_main.py
+
+watch:
+	@echo "Starting landing folder watcher..."
+	@PYTHON_BIN=$(PYTHON_BIN) bash watch_etl.sh
 
 validate:
 	@echo "Validating configuration..."
-	cd src/etl && python3 config.py
+	$(PYTHON_BIN) src/etl/config.py
 
 logs:
 	@ls -lht logs/ | head -10
@@ -111,7 +124,7 @@ db-reset:
 # Utility targets
 lint:
 	@echo "Checking Python code..."
-	cd src/etl && python3 -m py_compile *.py
+	$(PYTHON_BIN) -m py_compile src/etl/*.py
 	@echo "✓ No syntax errors found"
 
 requirements:

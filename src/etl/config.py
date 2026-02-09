@@ -77,7 +77,7 @@ GEO_VALIDATION = {
 # MSISDN Tunisian phone validation
 MSISDN_VALIDATION = {
     "required_prefix": "216",
-    "length": 12,  # 216 + 9 digits
+    "length": 11,  # 216 + 8 digits (Tunisian standard)
 }
 
 # Date formats to try parsing

@@ -218,7 +218,7 @@ class LoadingPipeline:
             'errors': []
         }
     
-    def execute(self, extracted_data: List[Dict]) -> Dict:
+    def execute(self, raw_data: List[Dict], transformed_data: List[Dict]) -> Dict:
         """Execute loading pipeline"""
         try:
             logger.info("=" * 60)
@@ -228,19 +228,19 @@ class LoadingPipeline:
             # 1. LOAD RAW DATA
             logger.info("\n[1/5] Loading raw data...")
             try:
-                raw_loaded = self.db.load_raw_data(extracted_data)
+                raw_loaded = self.db.load_raw_data(raw_data)
                 logger.info(f"  ✓ Loaded {raw_loaded} raw records")
             except Exception as e:
                 logger.error(f"  ✗ Error loading raw data: {e}")
                 self.loading_log['errors'].append(f"Raw data load error: {e}")
             
             # Filter valid records for processing
-            valid_records = [r for r in extracted_data if r.get('is_valid')]
+            valid_records = [r for r in transformed_data if r.get('is_valid')]
             
             # 2. LOAD CLEAN DATA
             logger.info("\n[2/5] Loading clean data...")
             try:
-                valid_count, invalid_count = self.db.load_clean_data(extracted_data)
+                valid_count, invalid_count = self.db.load_clean_data(transformed_data)
                 logger.info(f"  ✓ Loaded {valid_count} valid records, {invalid_count} invalid records")
             except Exception as e:
                 logger.error(f"  ✗ Error loading clean data: {e}")

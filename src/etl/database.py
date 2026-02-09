@@ -144,8 +144,7 @@ class DatabaseManager:
                             kit_code = EXCLUDED.kit_code,
                             dealer_id = EXCLUDED.dealer_id,
                             offre = EXCLUDED.offre,
-                            creation_date = EXCLUDED.creation_date,
-                            updated_at = CURRENT_TIMESTAMP
+                            creation_date = EXCLUDED.creation_date
                     """
                     
                     values = [
