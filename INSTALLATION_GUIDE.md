@@ -373,7 +373,7 @@ make up
 1. **Read the main README.md** for detailed documentation
 2. **Prepare your CSV data** according to format specifications
 3. **Configure validation rules** in `src/etl/config.py` if needed
-4. **Set up daily automation** using `daily_etl.sh`
+4. **Start the watcher** to enable real-time ETL automation
 5. **Create queries** to analyze the loaded data
 
 ## 📞 Connection Details

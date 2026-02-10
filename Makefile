@@ -1,4 +1,4 @@
-.PHONY: help install setup up down logs clean test run validate docker-setup env-setup watch
+.PHONY: help install setup up down logs clean test run validate docker-setup env-setup watch forecast
 
 VENV_DIR := .venv
 PYTHON_BIN := $(VENV_DIR)/bin/python
@@ -19,6 +19,7 @@ help:
 	@echo "  make up               - Start Docker services"
 	@echo "  make down             - Stop Docker services"
 	@echo "  make run              - Execute ETL pipeline"
+	@echo "  make forecast         - Run forecasting pipeline"
 	@echo "  make watch            - Watch landing/ and auto-run ETL"
 	@echo "  make validate         - Validate configuration"
 	@echo ""
@@ -77,6 +78,10 @@ down:
 run:
 	@echo "Starting ETL Pipeline..."
 	$(PYTHON_BIN) src/etl/etl_main.py
+
+forecast:
+	@echo "Starting Forecasting Pipeline..."
+	$(PYTHON_BIN) forecast_cli.py run
 
 watch:
 	@echo "Starting landing folder watcher..."

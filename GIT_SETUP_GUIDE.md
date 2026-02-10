@@ -232,7 +232,7 @@ git tag -l
 - ✓ Docker configuration (`docker-compose.yml`)
 - ✓ Documentation (`.md` files)
 - ✓ Configuration templates (`.env.example`)
-- ✓ Automation scripts (`Makefile`, `daily_etl.sh`)
+- ✓ Automation scripts (`Makefile`, `watch_etl.sh`)
 - ✓ Directory structure (`.gitkeep` files)
 
 **Excluded (in .gitignore):**

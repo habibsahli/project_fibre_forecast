@@ -59,15 +59,16 @@ A **production-ready Extract-Transform-Load (ETL) pipeline** for telecommunicati
 
 - **Makefile** (20+ commands)
   - `make setup`: Complete installation
+  - `make watch`: Start real-time watcher
   - `make run`: Execute pipeline
   - `make logs`: View execution logs
   - `make db-connect`: Access database
 
-- **Daily Scheduler** (`daily_etl.sh`)
-  - Cron-compatible
-  - Docker health checks
-  - Auto-cleanup of old logs
-  - Email notifications
+- **Real-Time Watcher** (`watch_etl.sh`)
+  - Auto-triggers on new CSV uploads
+  - 10-second debounce window
+  - File locking prevents concurrent runs
+  - Email notifications on launch
 
 ### 5️⃣ **Documentation**
 
@@ -230,7 +231,7 @@ projet-fibre-forecast/
 ├── 📄 INSTALLATION_GUIDE.md     (Setup walkthrough)
 ├── 📄 .env.example              (Configuration template)
 ├── 📄 Makefile                  (20+ automation commands)
-├── 📄 daily_etl.sh              (Cron script)
+├── 📄 watch_etl.sh              (Real-time watcher)
 │
 ├── 📁 data/
 │   ├── landing/                 (← Place CSV files here)
@@ -341,10 +342,10 @@ All easily customizable in `src/etl/config.py`:
 ## 📞 Next Steps
 
 1. **Power up:** `make setup`
-2. **Prepare data:** Place CSV files in `data/landing/`
-3. **Execute:** `make run`
-4. **Explore:** `make logs` and `make db-connect`
-5. **Automate:** Edit crontab to run `daily_etl.sh` daily
+2. **Start watcher:** `make watch`
+3. **Prepare data:** Place CSV files in `data/landing/`
+4. **Pipeline runs automatically** when files are detected
+5. **Explore:** `make logs` and `make db-connect`
 
 ---
 

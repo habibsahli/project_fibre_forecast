@@ -72,6 +72,15 @@ dim_offres  dim_geo  dim_dealers  fact_abonnements
    make run
    ```
 
+3. **Run Forecasting (Phase 2)**
+   ```bash
+   make forecast
+   # or
+   ./.venv/bin/python forecast_cli.py run
+   # skip LSTM if needed
+   ./.venv/bin/python forecast_cli.py run --no-lstm
+   ```
+
 3. **Auto-run on new files (recommended for continuous ingestion)**
    ```bash
    # Install watcher dependency (Linux)
@@ -125,6 +134,25 @@ dim_offres  dim_geo  dim_dealers  fact_abonnements
    make db-connect  # Access database
    ```
 
+   ## 📈 Forecasting Pipeline Flow (Phase 2)
+
+   ```mermaid
+   flowchart TD
+      A[Load clean data from PostgreSQL] --> B[Fill missing dates]
+      B --> C[Feature engineering
+      - time features
+      - lags
+      - rolling means]
+      C --> D[Temporal train/test split]
+      D --> E[Baseline run for all models]
+      E --> F[Pick top 2-3 models by MAPE]
+      F --> G[Lightweight tuning]
+      G --> H[Select best model]
+      H --> I[Train on full data]
+      I --> J[Forecast 30/90 days]
+      J --> K[Save forecasts + report + model]
+   ```
+
 ## 📁 Project Structure
 
 ```
@@ -146,8 +174,7 @@ projet-fibre-forecast/
 │       └── schema.sql      (Database schema)
 ├── logs/                   (Execution logs & reports)
 ├── Makefile                (Common commands)
-├── .env.example            (Configuration template)
-└── daily_etl.sh            (Scheduled daily run)
+└── .env.example            (Configuration template)
 ```
 
 ## 🔄 ETL Phases
@@ -336,24 +363,28 @@ JOIN etl_fibre.dim_temps dt ON fa.date_id = dt.date_id
 WHERE dt.full_date >= CURRENT_DATE - INTERVAL '7 days';
 ```
 
-## 🔔 Daily Automation
+## 🔔 Real-Time Automation
 
-Set up cron job for daily execution (2 AM):
+The ETL pipeline automatically triggers when new CSV files are added to `data/landing/` via the **file watcher**.
 
+**The watcher (`watch_etl.sh`) is active and handles all ETL automation.** No cron job is needed.
+
+### Watcher Features:
+1. Continuously monitors `data/landing/` for new CSV files
+2. Triggers ETL immediately upon file detection
+3. 10-second debounce window to batch multiple file uploads
+4. Sends email notifications on launch (if configured)
+5. Prevents concurrent ETL runs with file locking
+6. Auto-starts PostgreSQL container if needed
+
+### Start the Watcher:
 ```bash
-# Edit crontab
-crontab -e
+# Via Makefile
+make watch
 
-# Add line:
-0 2 * * * /path/to/projet-fibre-forecast/daily_etl.sh >> /path/to/projet-fibre-forecast/logs/cron.log 2>&1
+# Or directly
+bash watch_etl.sh
 ```
-
-The script will:
-1. Check if PostgreSQL is running (start if needed)
-2. Count CSV files in `data/landing/`
-3. Execute ETL if files present
-4. Clean logs older than 30 days
-5. Send email alerts on failure (if configured)
 
 ## 📋 CSV Format Requirements
 

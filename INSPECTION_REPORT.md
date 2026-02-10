@@ -33,8 +33,7 @@
 
 ### 4. SHELL SCRIPTS
 - [x] watch_etl.sh - Executable (Fixed: chmod +x)
-- [x] daily_etl.sh - Executable 
-- [x] Both scripts have proper error handling
+- [x] Proper error handling and file locking
 - [x] Shell syntax validated (bash -n)
 - [x] Environment variables properly sourced
 
@@ -129,13 +128,7 @@ All critical components verified and working correctly.
 
 ## 📋 RECOMMENDED ACTIONS (For Future)
 
-1. **Cron Setup**: To schedule daily runs:
-   ```bash
-   # Add to crontab -e
-   0 2 * * * cd /home/habib/fibre_data_project/projet-fibre-forecast && NOTIFY_EMAIL=habib.sahli@esprit.tn bash daily_etl.sh
-   ```
-
-2. **Monitoring**: Set up alerts for:
+1. **Monitoring**: Set up alerts for:
    - Database connection failures
    - ETL pipeline errors
    - Disk space (logs and raw data)

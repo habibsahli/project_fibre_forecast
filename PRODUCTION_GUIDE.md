@@ -42,7 +42,6 @@ Your Fibre Data ETL pipeline is **fully operational and production-ready**. All 
 ```
 ✓ scripts are executable (755):
   - watch_etl.sh (FIXED)
-  - daily_etl.sh
   - send_email.py
 ✓ Config files readable (644)
 ✓ Data directories writable (755)
@@ -63,7 +62,7 @@ Your Fibre Data ETL pipeline is **fully operational and production-ready**. All 
 ✓ Watcher active - Monitoring data/landing/
 ✓ Debounce window - 10 seconds (configurable)
 ✓ Email notifications - habib.sahli@esprit.tn
-✓ Cron-ready - daily_etl.sh ready for scheduling
+✓ Real-time triggers - Automatically triggers on file upload
 ✓ Logs accumulated - Full execution history
 ```
 
@@ -140,16 +139,21 @@ docker-compose exec postgres psql -U postgres -d fibre_data \
 NOTIFY_EMAIL=your@email.com .venv/bin/python src/etl/etl_main.py
 ```
 
-### Setup Daily Scheduler (Cron)
+### Real-Time ETL Automation
+
+**The watcher (`watch_etl.sh`) provides real-time automation - no cron job needed!**
+
+The watcher continuously monitors `data/landing/` and automatically runs the ETL pipeline when new CSV files are detected.
+
 ```bash
-# Edit crontab
-crontab -e
+# Ensure the watcher is running
+ps aux | grep watch_etl.sh
 
-# Add this line (runs at 2 AM daily):
-0 2 * * * cd /home/habib/fibre_data_project/projet-fibre-forecast && NOTIFY_EMAIL=habib.sahli@esprit.tn bash daily_etl.sh
+# View watcher activity
+tail -f logs/etl_watch.log
 
-# Verify cron job
-crontab -l
+# Restart watcher if needed
+make watch
 ```
 
 ### Email Configuration Options
