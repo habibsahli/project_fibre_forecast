@@ -22,6 +22,7 @@ def train_exponential_smoothing(train_values, seasonal_period: int = 7):
             fitted = model.fit(optimized=True)
             best_name = name
             best_model = fitted
+            break  # Return first successful fit
         except Exception:
             continue
 

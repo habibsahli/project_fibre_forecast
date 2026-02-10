@@ -92,7 +92,7 @@ def add_dimension_features(
 
 def build_feature_frame(
     df_daily: pd.DataFrame,
-    df_detailed: pd.DataFrame,
+    df_detailed: pd.DataFrame | None = None,
     lags: List[int] | None = None,
     windows: List[int] | None = None,
 ) -> Tuple[pd.DataFrame, List[str], List[str]]:
@@ -104,7 +104,11 @@ def build_feature_frame(
     df = add_lag_features(df, lags)
     df = add_rolling_features(df, windows)
 
-    df, top_govs, top_offres = add_dimension_features(df, df_detailed, top_n=3)
+    top_govs = []
+    top_offres = []
+    
+    if df_detailed is not None:
+        df, top_govs, top_offres = add_dimension_features(df, df_detailed, top_n=3)
 
     df = df.dropna().reset_index(drop=True)
     feature_cols = [c for c in df.columns if c not in ["date", "nb_abonnements"]]
