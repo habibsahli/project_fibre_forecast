@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-02-10T15:09:40.937398",
+  "total_configs": 19,
+  "successful_configs": 19,
+  "data_points": {
+    "train_size": 577,
+    "test_size": 145
+  },
+  "best_configuration": {
+    "name": "Seasonal: 30 days",
+    "order": [
+      1,
+      1,
+      1
+    ],
+    "seasonal_order": [
+      1,
+      1,
+      1,
+      30
+    ],
+    "metrics": {
+      "mape": 39.95803853994836,
+      "mae": 1.706702465468064,
+      "rmse": 2.214556469656116,
+      "training_time": 11.54858684539795
+    }
+  },
+  "improvement_percent": 5.515635248990131
+}

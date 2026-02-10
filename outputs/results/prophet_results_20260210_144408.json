@@ -1,0 +1,17 @@
+{
+  "model": "Prophet",
+  "timestamp": "2026-02-10T14:44:08.243196",
+  "metrics": {
+    "MAE": 19.107793492820747,
+    "RMSE": 25.353048556969856,
+    "MAPE": 0.647661386284057,
+    "sMAPE": 0.6513862210211537,
+    "training_time": 0.3720536231994629,
+    "total_time": 0.4177377223968506
+  },
+  "data_points": {
+    "train_size": 292,
+    "test_size": 73,
+    "prediction_length": 73
+  }
+}
