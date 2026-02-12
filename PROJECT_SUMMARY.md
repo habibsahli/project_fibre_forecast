@@ -251,11 +251,6 @@ projet-fibre-forecast/
 │   ├── docker-compose.yml       (PostgreSQL + PgAdmin)
 │   └── init-scripts/
 │       └── schema.sql           (Complete DB schema)
-│
-└── 📁 logs/
-    ├── etl_pipeline_*.log       (Execution logs)
-    ├── etl_report_*.json        (JSON reports)
-    └── scheduler.log            (Cron logs)
 ```
 
 ---

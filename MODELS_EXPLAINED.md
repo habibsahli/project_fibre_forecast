@@ -275,7 +275,7 @@ cat outputs/results/summary_*.json | jq '.best_model'
 Add to crontab:
 ```bash
 # Run comparison daily at 2 AM
-0 2 * * * cd /home/habib/fibre_data_project/projet-fibre-forecast && python run_all_models.py >> logs/daily_comparison.log 2>&1
+0 2 * * * cd /home/habib/fibre_data_project/projet-fibre-forecast && python run_all_models.py
 
 # Run only SARIMA weekly
 0 3 * * 0 cd /home/habib/fibre_data_project/projet-fibre-forecast && python run_sarima_model.py

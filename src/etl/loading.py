@@ -3,7 +3,6 @@ Loading Module - Database Dimension and Fact Table Population
 Handles loading dimensions and fact tables into PostgreSQL
 """
 
-import logging
 import pandas as pd
 from typing import List, Dict, Tuple, Optional
 from datetime import datetime, timedelta
@@ -50,13 +49,13 @@ class DimensionBuilder:
                                 'is_holiday': (day, month) in holidays
                             })
                         except Exception as e:
-                            logger.warning(f"Error creating date {year}-{month}-{day}: {e}")
+                            print(f"Error creating date {year}-{month}-{day}: {e}")
             
-            logger.info(f"Generated {len(dates_data)} time dimension records ({start_year}-{end_year})")
+            print(f"Generated {len(dates_data)} time dimension records ({start_year}-{end_year})")
             return dates_data
         
         except Exception as e:
-            logger.error(f"Error building time dimension: {e}")
+            print(f"Error building time dimension: {e}")
             return []
     
     @staticmethod
@@ -76,11 +75,11 @@ class DimensionBuilder:
                         }
             
             offers_list = list(offers_dict.values())
-            logger.info(f"Generated {len(offers_list)} offer dimension records")
+            print(f"Generated {len(offers_list)} offer dimension records")
             return offers_list
         
         except Exception as e:
-            logger.error(f"Error building offer dimension: {e}")
+            print(f"Error building offer dimension: {e}")
             return []
     
     @staticmethod
@@ -111,11 +110,11 @@ class DimensionBuilder:
                             }
             
             geo_list = list(geo_dict.values())
-            logger.info(f"Generated {len(geo_list)} geography dimension records")
+            print(f"Generated {len(geo_list)} geography dimension records")
             return geo_list
         
         except Exception as e:
-            logger.error(f"Error building geography dimension: {e}")
+            print(f"Error building geography dimension: {e}")
             return []
     
     @staticmethod
@@ -133,11 +132,11 @@ class DimensionBuilder:
                     }
             
             dealers_list = list(dealers_dict.values())
-            logger.info(f"Generated {len(dealers_list)} dealer dimension records")
+            print(f"Generated {len(dealers_list)} dealer dimension records")
             return dealers_list
         
         except Exception as e:
-            logger.error(f"Error building dealer dimension: {e}")
+            print(f"Error building dealer dimension: {e}")
             return []
 
 class FactBuilder:
@@ -195,11 +194,11 @@ class FactBuilder:
                     logger.debug(f"Error processing record {record.get('msisdn')}: {e}")
                     unmapped_count += 1
             
-            logger.info(f"Built {len(fact_records)} fact records, {unmapped_count} unmapped")
+            print(f"Built {len(fact_records)} fact records, {unmapped_count} unmapped")
             return fact_records, unmapped_count
         
         except Exception as e:
-            logger.error(f"Error building fact_abonnements: {e}")
+            print(f"Error building fact_abonnements: {e}")
             return [], len(records)
 
 class LoadingPipeline:
@@ -221,124 +220,124 @@ class LoadingPipeline:
     def execute(self, raw_data: List[Dict], transformed_data: List[Dict]) -> Dict:
         """Execute loading pipeline"""
         try:
-            logger.info("=" * 60)
-            logger.info("LOADING PHASE STARTED")
-            logger.info("=" * 60)
+            print("=" * 60)
+            print("LOADING PHASE STARTED")
+            print("=" * 60)
             
             # 1. LOAD RAW DATA
-            logger.info("\n[1/5] Loading raw data...")
+            print("\n[1/5] Loading raw data...")
             try:
                 raw_loaded = self.db.load_raw_data(raw_data)
-                logger.info(f"  ✓ Loaded {raw_loaded} raw records")
+                print(f"  ✓ Loaded {raw_loaded} raw records")
             except Exception as e:
-                logger.error(f"  ✗ Error loading raw data: {e}")
+                print(f"  ✗ Error loading raw data: {e}")
                 self.loading_log['errors'].append(f"Raw data load error: {e}")
             
             # Filter valid records for processing
             valid_records = [r for r in transformed_data if r.get('is_valid')]
             
             # 2. LOAD CLEAN DATA
-            logger.info("\n[2/5] Loading clean data...")
+            print("\n[2/5] Loading clean data...")
             try:
                 valid_count, invalid_count = self.db.load_clean_data(transformed_data)
-                logger.info(f"  ✓ Loaded {valid_count} valid records, {invalid_count} invalid records")
+                print(f"  ✓ Loaded {valid_count} valid records, {invalid_count} invalid records")
             except Exception as e:
-                logger.error(f"  ✗ Error loading clean data: {e}")
+                print(f"  ✗ Error loading clean data: {e}")
                 self.loading_log['errors'].append(f"Clean data load error: {e}")
             
             # 3. LOAD DIMENSIONS
-            logger.info("\n[3/5] Loading dimensions...")
+            print("\n[3/5] Loading dimensions...")
             
             # 3a. Time Dimension
             try:
-                logger.info("  Loading dim_temps...")
+                print("  Loading dim_temps...")
                 time_data = self.dim_builder.build_time_dimension()
                 time_loaded = self.db.upsert_dim_temps(time_data)
                 self.loading_log['dimensions_loaded']['dim_temps'] = time_loaded
-                logger.info(f"    ✓ Upserted {time_loaded} time records")
+                print(f"    ✓ Upserted {time_loaded} time records")
             except Exception as e:
-                logger.error(f"    ✗ Error loading dim_temps: {e}")
+                print(f"    ✗ Error loading dim_temps: {e}")
                 self.loading_log['errors'].append(f"Time dimension error: {e}")
             
             # 3b. Offer Dimension
             try:
-                logger.info("  Loading dim_offres...")
+                print("  Loading dim_offres...")
                 offer_data = self.dim_builder.build_offer_dimension(valid_records)
                 offer_loaded = self.db.upsert_dim_offres(offer_data)
                 self.loading_log['dimensions_loaded']['dim_offres'] = offer_loaded
-                logger.info(f"    ✓ Upserted {offer_loaded} offer records")
+                print(f"    ✓ Upserted {offer_loaded} offer records")
             except Exception as e:
-                logger.error(f"    ✗ Error loading dim_offres: {e}")
+                print(f"    ✗ Error loading dim_offres: {e}")
                 self.loading_log['errors'].append(f"Offer dimension error: {e}")
             
             # 3c. Geography Dimension
             try:
-                logger.info("  Loading dim_geographie...")
+                print("  Loading dim_geographie...")
                 geo_data = self.dim_builder.build_geography_dimension(valid_records)
                 geo_loaded = self.db.upsert_dim_geographie(geo_data)
                 self.loading_log['dimensions_loaded']['dim_geographie'] = geo_loaded
-                logger.info(f"    ✓ Upserted {geo_loaded} geography records")
+                print(f"    ✓ Upserted {geo_loaded} geography records")
             except Exception as e:
-                logger.error(f"    ✗ Error loading dim_geographie: {e}")
+                print(f"    ✗ Error loading dim_geographie: {e}")
                 self.loading_log['errors'].append(f"Geography dimension error: {e}")
             
             # 3d. Dealer Dimension
             try:
-                logger.info("  Loading dim_dealers...")
+                print("  Loading dim_dealers...")
                 dealer_data = self.dim_builder.build_dealer_dimension(valid_records)
                 dealer_loaded = self.db.upsert_dim_dealers(dealer_data)
                 self.loading_log['dimensions_loaded']['dim_dealers'] = dealer_loaded
-                logger.info(f"    ✓ Upserted {dealer_loaded} dealer records")
+                print(f"    ✓ Upserted {dealer_loaded} dealer records")
             except Exception as e:
-                logger.error(f"    ✗ Error loading dim_dealers: {e}")
+                print(f"    ✗ Error loading dim_dealers: {e}")
                 self.loading_log['errors'].append(f"Dealer dimension error: {e}")
             
             # 4. LOAD FACTS
-            logger.info("\n[4/5] Loading fact_abonnements...")
+            print("\n[4/5] Loading fact_abonnements...")
             try:
                 fact_records, unmapped_count = self.fact_builder.build_fact_abonnements(valid_records)
                 if fact_records:
                     facts_loaded = self.db.load_fact_abonnements(fact_records)
                     self.loading_log['facts_loaded'] = facts_loaded
-                    logger.info(f"  ✓ Loaded {facts_loaded} fact records")
+                    print(f"  ✓ Loaded {facts_loaded} fact records")
                     if unmapped_count > 0:
-                        logger.warning(f"  ⚠ {unmapped_count} records could not be mapped to dimensions")
+                        print(f"  ⚠ {unmapped_count} records could not be mapped to dimensions")
                 else:
-                    logger.warning("  No fact records to load")
+                    print("  No fact records to load")
             except Exception as e:
-                logger.error(f"  ✗ Error loading facts: {e}")
+                print(f"  ✗ Error loading facts: {e}")
                 self.loading_log['errors'].append(f"Fact load error: {e}")
             
             # 5. VALIDATE INTEGRITY
-            logger.info("\n[5/5] Validating referential integrity...")
+            print("\n[5/5] Validating referential integrity...")
             try:
                 validation_results = self.db.validate_referential_integrity()
                 self.loading_log['validation_results'] = validation_results
                 
                 if validation_results.get('null_date_ids', 0) > 0:
-                    logger.warning(f"  ⚠ {validation_results['null_date_ids']} fact records with null date_ids")
+                    print(f"  ⚠ {validation_results['null_date_ids']} fact records with null date_ids")
                 if validation_results.get('orphaned_dates', 0) > 0:
-                    logger.warning(f"  ⚠ {validation_results['orphaned_dates']} orphaned date references")
+                    print(f"  ⚠ {validation_results['orphaned_dates']} orphaned date references")
                 if validation_results.get('duplicate_msisdns', 0) > 0:
-                    logger.warning(f"  ⚠ {validation_results['duplicate_msisdns']} duplicate MSISDNs")
+                    print(f"  ⚠ {validation_results['duplicate_msisdns']} duplicate MSISDNs")
                 else:
-                    logger.info("  ✓ Referential integrity validated successfully")
+                    print("  ✓ Referential integrity validated successfully")
             except Exception as e:
-                logger.error(f"  ✗ Error validating integrity: {e}")
+                print(f"  ✗ Error validating integrity: {e}")
                 self.loading_log['errors'].append(f"Validation error: {e}")
             
             self.loading_log['end_time'] = datetime.now()
             self.loading_log['status'] = 'COMPLETED'
             
-            logger.info("\n" + "=" * 60)
-            logger.info("LOADING PHASE COMPLETED")
-            logger.info(f"Execution time: {(self.loading_log['end_time'] - self.loading_log['start_time']).total_seconds():.2f}s")
-            logger.info("=" * 60 + "\n")
+            print("\n" + "=" * 60)
+            print("LOADING PHASE COMPLETED")
+            print(f"Execution time: {(self.loading_log['end_time'] - self.loading_log['start_time']).total_seconds():.2f}s")
+            print("=" * 60 + "\n")
             
             return self.loading_log
         
         except Exception as e:
-            logger.error(f"Critical error in loading phase: {e}")
+            print(f"Critical error in loading phase: {e}")
             self.loading_log['end_time'] = datetime.now()
             self.loading_log['status'] = 'FAILED'
             self.loading_log['errors'].append(f"Critical error: {e}")

@@ -16,10 +16,11 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # Add parent directories to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
-from generative_models import TimeGANModel
-from forecasting.data_loader import load_daily_data, get_engine
+from src.generative_models import TimeGANModel
+from src.forecasting.data_loader import load_daily_data, get_engine
 
 def test_timegan_basic():
     """Basic TimeGAN test with synthetic data."""
@@ -163,8 +164,8 @@ def analyze_scenarios(scenarios_df):
     print(stats_df.round(2))
 
     # Overall statistics
-    print("
-📊 Overall Statistics:"    print(f"  Average daily subscriptions: {stats_df['mean'].mean():.0f}")
+    print("\n📊 Overall Statistics:")
+    print(f"  Average daily subscriptions: {stats_df['mean'].mean():.0f}")
     print(f"  Scenario variability (std): {stats_df['mean'].std():.0f}")
     print(f"  Most optimistic scenario: {stats_df.loc[stats_df['mean'].idxmax(), 'scenario']}")
     print(f"  Most pessimistic scenario: {stats_df.loc[stats_df['mean'].idxmin(), 'scenario']}")

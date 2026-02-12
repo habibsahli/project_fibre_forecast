@@ -1,0 +1,158 @@
+{
+  "timestamp": "2026-02-12T09:34:28.060337",
+  "total_configs_tested": 13,
+  "best_config": {
+    "name": "Seq Length: 7 days",
+    "hyperparameters": {
+      "name": "Seq Length: 7 days",
+      "seq_length": 7,
+      "lstm_units_l1": 64,
+      "lstm_units_l2": 32,
+      "dense_units": 16,
+      "dropout": 0.2,
+      "batch_size": 16,
+      "learning_rate": 0.001,
+      "epochs": 50
+    }
+  },
+  "best_metrics": {
+    "MAE": 1.4542577992314878,
+    "RMSE": 1.8316617351177316,
+    "MAPE": 45.76676127147971,
+    "sMAPE": 35.911671913925005,
+    "training_time": 4.69737982749939
+  },
+  "improvement_vs_baseline": "10.8%",
+  "all_results": [
+    {
+      "config": "Baseline (Current)",
+      "metrics": {
+        "MAE": 1.5121305092521335,
+        "RMSE": 1.8346515554101144,
+        "MAPE": 51.28573000653189,
+        "sMAPE": 37.26811916265809,
+        "training_time": 12.740549325942993
+      }
+    },
+    {
+      "config": "Seq Length: 7 days",
+      "metrics": {
+        "MAE": 1.4542577992314878,
+        "RMSE": 1.8316617351177316,
+        "MAPE": 45.76676127147971,
+        "sMAPE": 35.911671913925005,
+        "training_time": 4.69737982749939
+      }
+    },
+    {
+      "config": "Seq Length: 14 days",
+      "metrics": {
+        "MAE": 1.4643956504705298,
+        "RMSE": 1.7886693562250542,
+        "MAPE": 49.480771748034236,
+        "sMAPE": 36.25023335793953,
+        "training_time": 7.578943967819214
+      }
+    },
+    {
+      "config": "Seq Length: 21 days",
+      "metrics": {
+        "MAE": 1.5059197064368957,
+        "RMSE": 1.8163699018074357,
+        "MAPE": 53.28702181760799,
+        "sMAPE": 37.124086237415945,
+        "training_time": 8.065784454345703
+      }
+    },
+    {
+      "config": "Dropout: 0.1",
+      "metrics": {
+        "MAE": 1.7864909876947817,
+        "RMSE": 2.1661150249267718,
+        "MAPE": 71.05839475588276,
+        "sMAPE": 41.50331671935257,
+        "training_time": 7.0333685874938965
+      }
+    },
+    {
+      "config": "Dropout: 0.3",
+      "metrics": {
+        "MAE": 1.5056261726047682,
+        "RMSE": 1.8360279473730028,
+        "MAPE": 50.409330820856304,
+        "sMAPE": 37.15584917808057,
+        "training_time": 8.25344705581665
+      }
+    },
+    {
+      "config": "Batch Size: 8",
+      "metrics": {
+        "MAE": 1.5115552031475565,
+        "RMSE": 1.8353622433355434,
+        "MAPE": 51.14554782815437,
+        "sMAPE": 37.26068018207005,
+        "training_time": 32.03831195831299
+      }
+    },
+    {
+      "config": "Batch Size: 32",
+      "metrics": {
+        "MAE": 1.5122413469397504,
+        "RMSE": 1.8360448074563736,
+        "MAPE": 51.108203400571725,
+        "sMAPE": 37.27987324438033,
+        "training_time": 12.02213716506958
+      }
+    },
+    {
+      "config": "Learning Rate: 0.0001",
+      "metrics": {
+        "MAE": 1.4959962865580683,
+        "RMSE": 1.8498727872525722,
+        "MAPE": 48.71315051095908,
+        "sMAPE": 36.993745623797246,
+        "training_time": 13.326514720916748
+      }
+    },
+    {
+      "config": "Learning Rate: 0.01",
+      "metrics": {
+        "MAE": 1.488310954881751,
+        "RMSE": 1.8509368581811678,
+        "MAPE": 48.05102359220191,
+        "sMAPE": 36.82875209830498,
+        "training_time": 6.906587839126587
+      }
+    },
+    {
+      "config": "LSTM Units: L1=32, L2=16",
+      "metrics": {
+        "MAE": 1.5330799766208814,
+        "RMSE": 1.8431668548173858,
+        "MAPE": 54.34417472714964,
+        "sMAPE": 37.58424405143328,
+        "training_time": 10.692689895629883
+      }
+    },
+    {
+      "config": "LSTM Units: L1=128, L2=64",
+      "metrics": {
+        "MAE": 1.5076428662175718,
+        "RMSE": 1.8432749355346978,
+        "MAPE": 49.98823918779609,
+        "sMAPE": 37.221698306179505,
+        "training_time": 14.879862785339355
+      }
+    },
+    {
+      "config": "Combined Optimization",
+      "metrics": {
+        "MAE": 1.487301645740386,
+        "RMSE": 1.8082134160537118,
+        "MAPE": 51.37344477210849,
+        "sMAPE": 36.79914784041431,
+        "training_time": 6.130536794662476
+      }
+    }
+  ]
+}

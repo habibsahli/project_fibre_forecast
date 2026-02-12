@@ -39,12 +39,6 @@ env/
 *~
 .DS_Store
 
-# Logs
-logs/*.log
-logs/*.json
-logs/*.txt
-*.log
-
 # Data files (keep directory structure but ignore data)
 data/landing/*.csv
 data/raw/*.csv
@@ -54,7 +48,6 @@ data/processed/*.csv
 !data/landing/.gitkeep
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-!logs/.gitkeep
 
 # Database
 *.db

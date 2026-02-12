@@ -1,0 +1,18 @@
+{
+  "model": "ExponentialSmoothing",
+  "timestamp": "2026-02-11T09:26:16.182785",
+  "metrics": {
+    "MAE": 1.5038442479864167,
+    "RMSE": 1.9366423590650637,
+    "MAPE": 44.701785720173184,
+    "sMAPE": 36.70759673027709,
+    "training_time": 0.46377015113830566,
+    "total_time": 0.5133860111236572,
+    "method": "SES"
+  },
+  "data_points": {
+    "train_size": 577,
+    "test_size": 145,
+    "prediction_length": 145
+  }
+}

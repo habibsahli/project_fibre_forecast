@@ -3,7 +3,6 @@ Transformation Module - Data Cleaning and Validation
 Handles data cleaning, normalization, and validation rules
 """
 
-import logging
 import pandas as pd
 import numpy as np
 from typing import List, Dict, Tuple, Optional
@@ -232,17 +231,17 @@ class DataTransformer:
     def transform_batch(self, records: List[Dict]) -> Tuple[List[Dict], Dict]:
         """Transform a batch of records"""
         try:
-            logger.info("=" * 60)
-            logger.info("TRANSFORMATION PHASE STARTED")
-            logger.info(f"Processing {len(records)} records")
-            logger.info("=" * 60)
+            print("=" * 60)
+            print("TRANSFORMATION PHASE STARTED")
+            print(f"Processing {len(records)} records")
+            print("=" * 60)
             
             transformed_records = []
             error_counts = {}
             
             for i, record in enumerate(records):
                 if (i + 1) % 500 == 0:
-                    logger.info(f"  Processed {i + 1}/{len(records)} records")
+                    print(f"  Processed {i + 1}/{len(records)} records")
                 
                 transformed = self.transform_record(record)
                 transformed_records.append(transformed)
@@ -272,22 +271,22 @@ class DataTransformer:
             
             self.transformation_stats['validation_errors'] = error_counts
             
-            logger.info("\n" + "=" * 60)
-            logger.info("TRANSFORMATION PHASE COMPLETED")
-            logger.info(f"Total processed: {self.transformation_stats['total_processed']}")
-            logger.info(f"Valid records: {len(valid_records)}")
-            logger.info(f"Invalid records: {len(invalid_records)}")
-            logger.info(f"Duplicates removed: {deduped_count}")
+            print("\n" + "=" * 60)
+            print("TRANSFORMATION PHASE COMPLETED")
+            print(f"Total processed: {self.transformation_stats['total_processed']}")
+            print(f"Valid records: {len(valid_records)}")
+            print(f"Invalid records: {len(invalid_records)}")
+            print(f"Duplicates removed: {deduped_count}")
             if error_counts:
-                logger.info(f"Top errors:")
+                print(f"Top errors:")
                 for error, count in sorted(error_counts.items(), key=lambda x: x[1], reverse=True)[:5]:
-                    logger.info(f"  - {error}: {count}")
-            logger.info("=" * 60 + "\n")
+                    print(f"  - {error}: {count}")
+            print("=" * 60 + "\n")
             
             return valid_records + invalid_records, self.transformation_stats
         
         except Exception as e:
-            logger.error(f"Critical error in transformation: {e}")
+            print(f"Critical error in transformation: {e}")
             return records, {"error": str(e)}
 
 class TransformationPipeline:

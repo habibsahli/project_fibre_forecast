@@ -172,7 +172,6 @@ projet-fibre-forecast/
 │   ├── docker-compose.yml  (PostgreSQL + PgAdmin)
 │   └── init-scripts/
 │       └── schema.sql      (Database schema)
-├── logs/                   (Execution logs & reports)
 ├── Makefile                (Common commands)
 └── .env.example            (Configuration template)
 ```
@@ -455,9 +454,6 @@ head -1 data/landing/your_file.csv
 
 ### Data Validation Failures
 ```bash
-# Check logs for detailed errors
-tail -100 logs/etl_pipeline_*.log
-
 # Verify date format matches (MM/DD/YYYY HH:MM:SS)
 # Verify MSISDN is valid Tunisian number
 ```

@@ -44,6 +44,43 @@
             opacity: 0.9;
         }
 
+        .enhanced-badge {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .enhanced-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .enhanced-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .enhanced-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .enhanced-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
         .content {
             padding: 30px;
         }
@@ -240,14 +277,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔮 Fibre Subscription Forecasting</h1>
-            <p>Predict daily fibre subscription volumes using XGBoost AI</p>
+            <h1>🔮 Fibre Subscription Forecasting <span class="enhanced-badge">ENHANCED</span></h1>
+            <p>Advanced XGBoost Model with Anomaly Detection, Driver Analysis & What-If Scenarios</p>
         </div>
 
         <div class="content">
             <div class="tabs">
                 <button class="tab active" onclick="showTab('single')">Single Day Prediction</button>
                 <button class="tab" onclick="showTab('forecast')">Multi-Day Forecast</button>
+                <button class="tab" onclick="showTab('enhanced')">🔥 Enhanced Features</button>
                 <button class="tab" onclick="showTab('info')">Model Info</button>
             </div>
 
@@ -332,6 +370,35 @@
                 </form>
 
                 <div id="forecastResult" class="result"></div>
+            </div>
+
+            <!-- Enhanced Features Tab -->
+            <div id="enhanced" class="tab-content">
+                <h2>🔥 Enhanced AI Features</h2>
+                <p>Advanced analytics powered by machine learning</p>
+
+                <div class="enhanced-grid">
+                    <div class="enhanced-card">
+                        <h3>🔍 Anomaly Detection</h3>
+                        <p>Automatically detect unusual patterns in subscription data</p>
+                        <button onclick="loadAnomalies()" class="btn-primary">View Anomalies</button>
+                        <div id="anomaliesResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="enhanced-card">
+                        <h3>🎯 Key Drivers</h3>
+                        <p>Discover which factors most influence subscriptions</p>
+                        <button onclick="loadDrivers()" class="btn-primary">Analyze Drivers</button>
+                        <div id="driversResult" class="result" style="display:none;"></div>
+                    </div>
+
+                    <div class="enhanced-card">
+                        <h3>🎭 What-If Scenarios</h3>
+                        <p>Simulate the impact of business decisions</p>
+                        <button onclick="loadScenarios()" class="btn-primary">Explore Scenarios</button>
+                        <div id="scenariosResult" class="result" style="display:none;"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Model Info Tab -->
@@ -569,6 +636,112 @@
             document.getElementById('date').value = tomorrow.toISOString().split('T')[0];
             document.getElementById('startDate').value = tomorrow.toISOString().split('T')[0];
         });
+
+        // Enhanced Features Functions
+        async function loadAnomalies() {
+            const resultDiv = document.getElementById('anomaliesResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+
+            try {
+                const response = await fetch('/anomalies');
+                const data = await response.json();
+
+                let html = '<h4>🔍 Anomaly Detection Results</h4>';
+                html += `<p><strong>Anomalies Detected:</strong> ${data.anomalies_count}</p>`;
+                html += `<p><strong>Anomaly Rate:</strong> ${data.anomaly_rate.toFixed(1)}%</p>`;
+
+                if (data.backtest_results && data.backtest_results.length > 0) {
+                    html += '<h5>Backtesting Performance:</h5><ul>';
+                    data.backtest_results.forEach(fold => {
+                        html += `<li>Fold ${fold.fold}: MAE ${fold.mae.toFixed(3)}, MAPE ${fold.mape.toFixed(1)}%</li>`;
+                    });
+                    html += '</ul>';
+                }
+
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = html;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<p>Error loading anomalies: ${error.message}</p>`;
+            }
+        }
+
+        async function loadDrivers() {
+            const resultDiv = document.getElementById('driversResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+
+            try {
+                const response = await fetch('/drivers');
+                const data = await response.json();
+
+                let html = '<h4>🎯 Key Drivers Analysis</h4>';
+                html += '<h5>Top Feature Importance:</h5><ol>';
+
+                data.top_drivers.slice(0, 5).forEach(([feature, score]) => {
+                    html += `<li><strong>${feature}</strong>: ${score.toFixed(1)}</li>`;
+                });
+                html += '</ol>';
+
+                if (data.correlations) {
+                    html += '<h5>Business Factor Correlations:</h5><ul>';
+                    Object.entries(data.correlations).forEach(([factor, corr]) => {
+                        const direction = corr > 0 ? '📈' : '📉';
+                        html += `<li>${factor}: ${direction} ${corr.toFixed(3)}</li>`;
+                    });
+                    html += '</ul>';
+                }
+
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = html;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<p>Error loading drivers: ${error.message}</p>`;
+            }
+        }
+
+        async function loadScenarios() {
+            const resultDiv = document.getElementById('scenariosResult');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+
+            try {
+                const response = await fetch('/scenarios');
+                const data = await response.json();
+
+                let html = '<h4>🎭 What-If Scenarios</h4>';
+                html += `<p><strong>Forecast Horizon:</strong> ${data.forecast_horizon_days} days</p>`;
+                html += '<h5>Available Scenarios:</h5><ul>';
+
+                data.scenarios.forEach(scenario => {
+                    const total = data.scenarios_data[scenario].reduce((a, b) => a + b, 0);
+                    html += `<li><strong>${scenario}</strong>: ${total.toFixed(0)} total subscriptions</li>`;
+                });
+                html += '</ul>';
+
+                html += '<h5>Scenario Comparison (30 days):</h5>';
+                html += '<table style="width:100%; border-collapse:collapse;">';
+                html += '<tr><th style="border:1px solid #ddd; padding:8px;">Scenario</th><th style="border:1px solid #ddd; padding:8px;">Total</th><th style="border:1px solid #ddd; padding:8px;">vs Baseline</th></tr>';
+
+                const baselineTotal = data.scenarios_data['Baseline'].reduce((a, b) => a + b, 0);
+                data.scenarios.forEach(scenario => {
+                    const total = data.scenarios_data[scenario].reduce((a, b) => a + b, 0);
+                    const diff = total - baselineTotal;
+                    html += `<tr><td style="border:1px solid #ddd; padding:8px;">${scenario}</td><td style="border:1px solid #ddd; padding:8px;">${total.toFixed(0)}</td><td style="border:1px solid #ddd; padding:8px;">${diff > 0 ? '+' : ''}${diff.toFixed(0)}</td></tr>`;
+                });
+                html += '</table>';
+
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = html;
+
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<p>Error loading scenarios: ${error.message}</p>`;
+            }
+        }
     </script>
 </body>
 </html>

@@ -1,49 +1,56 @@
 #!/usr/bin/env python3
 """
 Run the Fibre Forecasting Web Application
-Starts both Flask API and web interface
+Starts the simple HTTP server and opens web interface
 """
 
-import subprocess
 import sys
+import os
+import site
+
+# Add user site-packages to path
+user_site = site.getusersitepackages()
+if user_site not in sys.path:
+    sys.path.insert(0, user_site)
+
+import subprocess
 import time
 import webbrowser
 from pathlib import Path
 
 def start_api():
-    """Start the Flask API in background"""
-    print("🚀 Starting Flask API...")
+    """Start the simple HTTP API server"""
+    print("🚀 Starting HTTP API server...")
     api_process = subprocess.Popen([
-        sys.executable, "api.py"
+        sys.executable, "simple_api.py"
     ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Wait a bit for API to start
-    time.sleep(3)
+    # Wait a bit for server to start
+    time.sleep(2)
 
-    # Check if API started successfully
+    # Check if server started successfully
     if api_process.poll() is None:
-        print("✅ Flask API started successfully on http://localhost:5000")
+        print("✅ HTTP API server started successfully on http://localhost:5000")
         return api_process
     else:
         stdout, stderr = api_process.communicate()
-        print("❌ Failed to start Flask API:")
+        print("❌ Failed to start HTTP API server:")
         print(stderr.decode())
         return None
 
 def open_web_interface():
     """Open the web interface in browser"""
-    web_path = Path("web_interface.html").absolute()
-    print(f"🌐 Opening web interface: file://{web_path}")
-    webbrowser.open(f"file://{web_path}")
+    print("🌐 Opening web interface in browser...")
+    webbrowser.open("http://localhost:5000")
 
 def main():
     print("🔮 Fibre Subscription Forecasting - Web Application")
     print("="*55)
 
-    # Start API
+    # Start API server
     api_process = start_api()
     if not api_process:
-        print("❌ Cannot start web application without API")
+        print("❌ Cannot start web application without API server")
         return 1
 
     # Open web interface
@@ -51,7 +58,7 @@ def main():
 
     print("\n" + "="*55)
     print("🎉 Web application is running!")
-    print("📱 Web Interface: Open web_interface.html in your browser")
+    print("🌐 Web Interface: http://localhost:5000")
     print("🔗 API Endpoints: http://localhost:5000")
     print("🛑 Press Ctrl+C to stop the application")
     print("="*55)

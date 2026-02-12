@@ -146,7 +146,7 @@ python run_sarima_model.py | grep "ARIMA Order:"
 ### Scenario 4: Production Scheduling
 ```bash
 # Add to crontab to run daily
-0 2 * * * cd /home/habib/fibre_data_project/projet-fibre-forecast && python run_all_models.py >> logs/daily_comparison.log 2>&1
+0 2 * * * cd /home/habib/fibre_data_project/projet-fibre-forecast && python run_all_models.py
 ```
 
 ---

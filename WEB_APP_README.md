@@ -2,12 +2,53 @@
 
 A user-friendly web interface for the XGBoost-powered fibre subscription forecasting model.
 
-## 🚀 Quick Start
+## � Current Status
 
-### 1. Train the Model (if not already done)
+✅ **COMPLETED:**
+- XGBoost model training and serialization
+- Web interface HTML/CSS/JavaScript
+- Flask API code (api.py)
+- Alternative simple HTTP server (simple_api.py)
+- Application launcher (run_web_app.py)
+- Comprehensive documentation
+
+⚠️ **REQUIRES NETWORK ACCESS:**
+- Flask and Flask-CORS packages installation
+- pandas, numpy, scikit-learn, xgboost, joblib packages
+
+## 🚀 Setup Instructions
+
+### Option 1: Flask Installation (Recommended)
 ```bash
-python3 train_xgboost_for_api.py
+# Install required packages
+pip install flask flask-cors pandas numpy scikit-learn xgboost joblib
+
+# Start the web application
+python3 run_web_app.py
 ```
+
+### Option 2: Simple HTTP Server (Alternative)
+If Flask installation fails, the application includes a built-in HTTP server:
+```bash
+# Install required packages
+pip install pandas numpy scikit-learn xgboost joblib
+
+# Start with simple server
+python3 run_web_app.py
+```
+
+### Option 3: Manual Package Installation
+If pip network issues persist:
+```bash
+# Download packages manually and install
+# Or use system package manager if available
+# Then run: python3 run_web_app.py
+```
+
+## 🔮 Usage
+
+### 1. Train the Model (Already Done)
+The XGBoost model has been trained and saved to `outputs/models/`
 
 ### 2. Start the Web Application
 ```bash
@@ -15,7 +56,7 @@ python3 run_web_app.py
 ```
 
 This will:
-- Start the Flask API on `http://localhost:5000`
+- Start the HTTP server on `http://localhost:5000`
 - Open the web interface in your browser
 
 ### 3. Use the Web Interface

@@ -24,12 +24,6 @@ __version__ = "1.0.0"
 __author__ = "Data Engineering Team"
 __date__ = "February 2026"
 
-import logging
-
-# Configure package logging
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.NullHandler())
-
 __all__ = [
     'config',
     'database',

@@ -1,0 +1,19 @@
+{
+  "model": "SARIMA",
+  "timestamp": "2026-02-10T15:11:43.032866",
+  "metrics": {
+    "MAE": 1.4879198510034621,
+    "RMSE": 1.9003158182429145,
+    "MAPE": 46.56413063680131,
+    "sMAPE": 36.232260531690436,
+    "training_time": 7.4534947872161865,
+    "total_time": 7.512231826782227,
+    "model_order": "(0, 0, 0)",
+    "seasonal_order": "(1, 0, 0, 7)"
+  },
+  "data_points": {
+    "train_size": 577,
+    "test_size": 145,
+    "prediction_length": 145
+  }
+}

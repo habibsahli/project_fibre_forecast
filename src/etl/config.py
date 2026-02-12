@@ -14,11 +14,10 @@ DATA_DIR = PROJECT_ROOT / "data"
 LANDING_DIR = DATA_DIR / "landing"
 RAW_DIR = DATA_DIR / "raw"
 PROCESSED_DIR = DATA_DIR / "processed"
-LOGS_DIR = PROJECT_ROOT / "logs"
 SRC_DIR = PROJECT_ROOT / "src"
 
 # Create directories if they don't exist
-for directory in [LANDING_DIR, RAW_DIR, PROCESSED_DIR, LOGS_DIR]:
+for directory in [LANDING_DIR, RAW_DIR, PROCESSED_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
 # ============= Database Configuration =============
@@ -129,18 +128,6 @@ OPTIONAL_COLUMNS = {
     "delegation_name"
 }
 
-# ============= Logging Configuration =============
-LOG_FILE = LOGS_DIR / f"etl_pipeline_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
-
-LOG_CONFIG = {
-    "level": "INFO",
-    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    "handlers": {
-        "file": str(LOG_FILE),
-        "console": True
-    }
-}
-
 # ============= ETL Configuration =============
 ETL_CONFIG = {
     "batch_size": 1000,
@@ -198,9 +185,6 @@ def get_validation_summary() -> Dict:
     }
 
 # ============= Helper Functions =============
-def log_file_path() -> Path:
-    """Get current log file path"""
-    return LOG_FILE
 
 def get_db_connection_string() -> str:
     """Generate PostgreSQL connection string"""
@@ -214,7 +198,7 @@ def validate_config() -> Tuple[bool, List[str]]:
     errors = []
     
     # Check critical directories exist
-    for directory in [LANDING_DIR, RAW_DIR, PROCESSED_DIR, LOGS_DIR]:
+    for directory in [LANDING_DIR, RAW_DIR, PROCESSED_DIR]:
         if not directory.exists():
             errors.append(f"Directory missing: {directory}")
     
@@ -230,7 +214,6 @@ if __name__ == "__main__":
     print("=== ETL Configuration ===\n")
     print(f"Project Root: {PROJECT_ROOT}")
     print(f"Data Directory: {DATA_DIR}")
-    print(f"Log File: {LOG_FILE}")
     print(f"\nDatabase: {DB_CONFIG['database']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}")
     print(f"Required Columns: {len(REQUIRED_COLUMNS)}")
     print(f"Date Formats Supported: {len(DATE_FORMATS)}")

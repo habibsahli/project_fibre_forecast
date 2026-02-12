@@ -1,0 +1,20 @@
+{
+  "model": "XGBoost",
+  "timestamp": "2026-02-12T09:36:35.999325",
+  "metrics": {
+    "MAE": 1.3512589779305966,
+    "RMSE": 1.6757002904627356,
+    "MAPE": 267092326.66959694,
+    "sMAPE": 34.2070565071233,
+    "training_time": 0.9770753383636475,
+    "total_time": 1.0405502319335938,
+    "n_features": 20,
+    "n_trees": 200
+  },
+  "data_points": {
+    "train_size": 560,
+    "test_size": 141,
+    "n_features": 20,
+    "prediction_length": 141
+  }
+}

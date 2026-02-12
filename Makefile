@@ -1,4 +1,4 @@
-.PHONY: help install setup up down logs clean test run validate docker-setup env-setup watch forecast
+.PHONY: help install setup up down clean test run validate docker-setup env-setup watch forecast
 
 VENV_DIR := .venv
 PYTHON_BIN := $(VENV_DIR)/bin/python
@@ -24,7 +24,6 @@ help:
 	@echo "  make validate         - Validate configuration"
 	@echo ""
 	@echo "Maintenance:"
-	@echo "  make logs             - View ETL logs"
 	@echo "  make clean            - Remove containers and volumes (CAUTION!)"
 	@echo "  make test             - Run test data through pipeline"
 	@echo ""
@@ -90,12 +89,6 @@ watch:
 validate:
 	@echo "Validating configuration..."
 	$(PYTHON_BIN) src/etl/config.py
-
-logs:
-	@ls -lht logs/ | head -10
-	@echo ""
-	@echo "Latest log file:"
-	@tail -50 logs/etl_pipeline_*.log 2>/dev/null | head -50 || echo "No log files found"
 
 clean:
 	@echo "WARNING: This will remove Docker containers and delete PostgreSQL data!"

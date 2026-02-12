@@ -8,7 +8,6 @@ from psycopg2.extras import execute_values, RealDictCursor
 from psycopg2.pool import SimpleConnectionPool
 from contextlib import contextmanager
 from typing import List, Dict, Tuple, Optional
-import logging
 from datetime import datetime
 from config import DB_CONFIG, LOG_FILE
 
@@ -29,9 +28,9 @@ class DatabaseManager:
                 user=DB_CONFIG['user'],
                 password=DB_CONFIG['password']
             )
-            logger.info(f"Database connection pool initialized with {pool_size} connections")
+            print(f"Database connection pool initialized with {pool_size} connections")
         except Exception as e:
-            logger.error(f"Failed to initialize database connection pool: {e}")
+            print(f"Failed to initialize database connection pool: {e}")
             raise
     
     @contextmanager
@@ -43,7 +42,7 @@ class DatabaseManager:
             conn.commit()
         except Exception as e:
             conn.rollback()
-            logger.error(f"Database transaction error: {e}")
+            print(f"Database transaction error: {e}")
             raise
         finally:
             self.pool.putconn(conn)
@@ -60,7 +59,7 @@ class DatabaseManager:
                 else:
                     return cursor.rowcount
             except Exception as e:
-                logger.error(f"Query execution error: {e}\nQuery: {query}")
+                print(f"Query execution error: {e}\nQuery: {query}")
                 raise
             finally:
                 cursor.close()
@@ -69,7 +68,7 @@ class DatabaseManager:
         """Close all connections in the pool"""
         if self.pool:
             self.pool.closeall()
-            logger.info("Database connection pool closed")
+            print("Database connection pool closed")
     
     # ========== RAW DATA OPERATIONS ==========
     
@@ -110,10 +109,10 @@ class DatabaseManager:
                 
                 execute_values(cursor, query, values, page_size=1000)
                 count = cursor.rowcount
-                logger.info(f"Loaded {count} raw records into database")
+                print(f"Loaded {count} raw records into database")
                 return count
             except Exception as e:
-                logger.error(f"Error loading raw data: {e}")
+                print(f"Error loading raw data: {e}")
                 raise
             finally:
                 cursor.close()
@@ -186,10 +185,10 @@ class DatabaseManager:
                     
                     execute_values(cursor, invalid_query, invalid_values, page_size=1000)
                 
-                logger.info(f"Loaded {len(valid_records)} valid and {len(invalid_records)} invalid records")
+                print(f"Loaded {len(valid_records)} valid and {len(invalid_records)} invalid records")
                 return len(valid_records), len(invalid_records)
             except Exception as e:
-                logger.error(f"Error loading clean data: {e}")
+                print(f"Error loading clean data: {e}")
                 raise
             finally:
                 cursor.close()
@@ -230,10 +229,10 @@ class DatabaseManager:
                 
                 execute_values(cursor, query, values, page_size=1000)
                 count = cursor.rowcount
-                logger.info(f"Upserted {count} time dimension records")
+                print(f"Upserted {count} time dimension records")
                 return count
             except Exception as e:
-                logger.error(f"Error upserting dim_temps: {e}")
+                print(f"Error upserting dim_temps: {e}")
                 raise
             finally:
                 cursor.close()
@@ -260,10 +259,10 @@ class DatabaseManager:
                 
                 execute_values(cursor, query, values, page_size=1000)
                 count = cursor.rowcount
-                logger.info(f"Upserted {count} offer dimension records")
+                print(f"Upserted {count} offer dimension records")
                 return count
             except Exception as e:
-                logger.error(f"Error upserting dim_offres: {e}")
+                print(f"Error upserting dim_offres: {e}")
                 raise
             finally:
                 cursor.close()
@@ -299,10 +298,10 @@ class DatabaseManager:
                 
                 execute_values(cursor, query, values, page_size=1000)
                 count = cursor.rowcount
-                logger.info(f"Upserted {count} geography dimension records")
+                print(f"Upserted {count} geography dimension records")
                 return count
             except Exception as e:
-                logger.error(f"Error upserting dim_geographie: {e}")
+                print(f"Error upserting dim_geographie: {e}")
                 raise
             finally:
                 cursor.close()
@@ -329,10 +328,10 @@ class DatabaseManager:
                 
                 execute_values(cursor, query, values, page_size=1000)
                 count = cursor.rowcount
-                logger.info(f"Upserted {count} dealer dimension records")
+                print(f"Upserted {count} dealer dimension records")
                 return count
             except Exception as e:
-                logger.error(f"Error upserting dim_dealers: {e}")
+                print(f"Error upserting dim_dealers: {e}")
                 raise
             finally:
                 cursor.close()
@@ -375,10 +374,10 @@ class DatabaseManager:
                 
                 execute_values(cursor, query, values, page_size=1000)
                 count = cursor.rowcount
-                logger.info(f"Loaded {count} fact records")
+                print(f"Loaded {count} fact records")
                 return count
             except Exception as e:
-                logger.error(f"Error loading facts: {e}")
+                print(f"Error loading facts: {e}")
                 raise
             finally:
                 cursor.close()
@@ -438,10 +437,10 @@ class DatabaseManager:
             )
             
             self.execute_query(query, params)
-            logger.info(f"Audit log recorded for {audit_data.get('process_name')}")
+            print(f"Audit log recorded for {audit_data.get('process_name')}")
             return True
         except Exception as e:
-            logger.error(f"Error logging audit: {e}")
+            print(f"Error logging audit: {e}")
             return False
     
     # ========== VALIDATION OPERATIONS ==========
@@ -477,10 +476,10 @@ class DatabaseManager:
             result = self.execute_query(query, fetch=True)
             validations['duplicate_msisdns'] = result[0]['count'] if result else 0
             
-            logger.info(f"Referential integrity validation: {validations}")
+            print(f"Referential integrity validation: {validations}")
             return validations
         except Exception as e:
-            logger.error(f"Error validating referential integrity: {e}")
+            print(f"Error validating referential integrity: {e}")
             return {"error": str(e)}
 
 # ========== MODULE INITIALIZATION ==========

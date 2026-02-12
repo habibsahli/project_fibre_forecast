@@ -5,10 +5,9 @@ set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ETL_SCRIPT="$PROJECT_ROOT/src/etl/etl_main.py"
-LOG_DIR="$PROJECT_ROOT/logs"
 DOCKER_COMPOSE="$PROJECT_ROOT/docker/docker-compose.yml"
 LANDING_DIR="$PROJECT_ROOT/data/landing"
-LOCK_FILE="$LOG_DIR/etl_watch.lock"
+LOCK_FILE="/tmp/etl_watch.lock"
 INOTIFY_BIN="${INOTIFY_BIN:-inotifywait}"
 DEBOUNCE_SECONDS="${DEBOUNCE_SECONDS:-10}"
 NOTIFY_EMAIL="${NOTIFY_EMAIL:-}"
@@ -17,10 +16,8 @@ SUBJECT_PREFIX="${SUBJECT_PREFIX:-ETL Launch}"
 HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
-mkdir -p "$LOG_DIR"
-
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_DIR/etl_watch.log"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
 }
 
 require_inotify() {
@@ -42,7 +39,7 @@ send_launch_email() {
 
     # Try Python email script first
     if [ -f "$PROJECT_ROOT/send_email.py" ] && [ -n "$PYTHON_BIN" ]; then
-        if "$PYTHON_BIN" "$PROJECT_ROOT/send_email.py" "$NOTIFY_EMAIL" "$subject" "$body" 2>&1 | tee -a "$LOG_DIR/etl_watch.log"; then
+        if "$PYTHON_BIN" "$PROJECT_ROOT/send_email.py" "$NOTIFY_EMAIL" "$subject" "$body" 2>&1; then
             log "Email notification sent to $NOTIFY_EMAIL"
             return 0
         fi
