@@ -1,0 +1,27 @@
+{
+  "model": "LSTM",
+  "timestamp": "2026-02-12T09:36:26.267373",
+  "hyperparameters": {
+    "seq_length": 7,
+    "lstm_units_l1": 64,
+    "lstm_units_l2": 32,
+    "dense_units": 16,
+    "dropout": 0.2,
+    "batch_size": 16,
+    "learning_rate": 0.001,
+    "epochs": 22
+  },
+  "metrics": {
+    "MAE": 1.4540464964465818,
+    "RMSE": 1.838379698456607,
+    "MAPE": 45.073879106526874,
+    "sMAPE": 35.93998062834617,
+    "training_time": 4.792714595794678,
+    "total_time": 4.792714595794678
+  },
+  "data_points": {
+    "train_size": 577,
+    "test_size": 145,
+    "prediction_length": 138
+  }
+}
