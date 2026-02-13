@@ -190,14 +190,14 @@ class ForecastingHandler(BaseHTTPRequestHandler):
             self.send_error(500, f"Prediction error: {str(e)}")
 
     def handle_forecast(self):
-        """Handle multi-day forecast request"""
+        """Handle multi-month forecast request"""
         try:
             content_length = int(self.headers['Content-Length'])
             post_data = self.rfile.read(content_length)
             data = json.loads(post_data.decode('utf-8'))
 
             start_date_str = data.get('start_date')
-            days = int(data.get('days', 7))
+            months = int(data.get('months', 6))
             gov = data.get('governorate')
             offre = data.get('offer')
 
@@ -206,44 +206,63 @@ class ForecastingHandler(BaseHTTPRequestHandler):
                 return
 
             start_date = pd.to_datetime(start_date_str)
-            forecasts = []
+            monthly_forecasts = []
 
-            for i in range(days):
-                current_date = start_date + timedelta(days=i)
-                date_str = current_date.strftime('%Y-%m-%d')
+            for month_offset in range(months):
+                # Calculate the month start and end dates
+                month_start = start_date + pd.DateOffset(months=month_offset)
+                month_end = month_start + pd.DateOffset(months=1) - pd.DateOffset(days=1)
 
-                features = create_prediction_features(date_str, gov, offre)
-                prediction = model.predict(features)[0]
+                # Generate daily forecasts for this month
+                monthly_predictions = []
+                current_date = month_start
 
-                forecasts.append({
-                    'date': date_str,
-                    'prediction': float(prediction),
-                    'day': i + 1
+                while current_date <= month_end:
+                    date_str = current_date.strftime('%Y-%m-%d')
+                    features = create_prediction_features(date_str, gov, offre)
+                    prediction = model.predict(features)[0]
+                    monthly_predictions.append(float(prediction))
+                    current_date += timedelta(days=1)
+
+                # Calculate monthly total
+                monthly_total = sum(monthly_predictions)
+
+                # Format period string
+                period_str = f"{month_start.strftime('%B %Y')}"
+
+                monthly_forecasts.append({
+                    'month': month_offset + 1,
+                    'period': period_str,
+                    'prediction': round(monthly_total, 2),
+                    'days_in_month': len(monthly_predictions),
+                    'avg_daily': round(monthly_total / len(monthly_predictions), 2) if monthly_predictions else 0
                 })
 
             # Calculate summary statistics
-            predictions = [f['prediction'] for f in forecasts]
-            total_subscriptions = sum(predictions)
-            avg_daily = total_subscriptions / len(predictions)
-            min_daily = min(predictions)
-            max_daily = max(predictions)
-            end_date = forecasts[-1]['date'] if forecasts else start_date_str
+            monthly_totals = [f['prediction'] for f in monthly_forecasts]
+            total_subscriptions = sum(monthly_totals)
+            avg_monthly = total_subscriptions / len(monthly_totals) if monthly_totals else 0
+            min_monthly = min(monthly_totals) if monthly_totals else 0
+            max_monthly = max(monthly_totals) if monthly_totals else 0
+
+            end_month = start_date + pd.DateOffset(months=months-1)
+            end_period = f"{end_month.strftime('%B %Y')}"
 
             summary = {
                 'total_subscriptions': round(total_subscriptions, 2),
-                'avg_daily': round(avg_daily, 2),
-                'min_daily': round(min_daily, 2),
-                'max_daily': round(max_daily, 2),
+                'avg_monthly': round(avg_monthly, 2),
+                'min_monthly': round(min_monthly, 2),
+                'max_monthly': round(max_monthly, 2),
                 'start_date': start_date_str,
-                'end_date': end_date,
-                'days': days
+                'end_period': end_period,
+                'months': months
             }
 
             response = {
-                'forecast': forecasts,  # Changed from 'forecasts' to 'forecast' to match JS expectation
+                'forecast': monthly_forecasts,  # Changed from 'forecasts' to 'forecast' to match JS expectation
                 'summary': summary,
                 'start_date': start_date_str,
-                'days': days,
+                'months': months,
                 'governorate': gov,
                 'offer': offre,
                 'timestamp': datetime.now().isoformat()

@@ -284,7 +284,7 @@
         <div class="content">
             <div class="tabs">
                 <button class="tab active" onclick="showTab('single')">Single Day Prediction</button>
-                <button class="tab" onclick="showTab('forecast')">Multi-Day Forecast</button>
+                <button class="tab" onclick="showTab('forecast')">Multi-Month Forecast</button>
                 <button class="tab" onclick="showTab('enhanced')">🔥 Enhanced Features</button>
                 <button class="tab" onclick="showTab('info')">Model Info</button>
             </div>
@@ -328,10 +328,10 @@
                 <div id="singleResult" class="result"></div>
             </div>
 
-            <!-- Multi-Day Forecast Tab -->
+            <!-- Multi-Month Forecast Tab -->
             <div id="forecast" class="tab-content">
-                <h2>📈 Multi-Day Forecast</h2>
-                <p>Generate forecast for multiple days ahead</p>
+                <h2>📈 Multi-Month Forecast</h2>
+                <p>Generate forecast for multiple months ahead</p>
 
                 <form id="forecastForm">
                     <div class="form-group">
@@ -340,8 +340,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="days">📊 Number of Days (1-90):</label>
-                        <input type="number" id="days" min="1" max="90" value="30" required>
+                        <label for="months">📊 Number of Months (1-12):</label>
+                        <input type="number" id="months" min="1" max="12" value="6" required>
                     </div>
 
                     <div class="form-group">
@@ -493,7 +493,7 @@
             }
         });
 
-        // Multi-day forecast
+        // Multi-month forecast
         document.getElementById('forecastForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -514,7 +514,7 @@
                     },
                     body: JSON.stringify({
                         start_date: document.getElementById('startDate').value,
-                        days: parseInt(document.getElementById('days').value),
+                        months: parseInt(document.getElementById('months').value),
                         governorate: document.getElementById('forecastGovernorate').value,
                         offer: document.getElementById('forecastOffer').value
                     })
@@ -535,25 +535,25 @@
                                 <div class="stat-label">Total Subscriptions</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${summary.avg_daily}</div>
-                                <div class="stat-label">Avg Daily</div>
+                                <div class="stat-value">${summary.avg_monthly}</div>
+                                <div class="stat-label">Avg Monthly</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${summary.min_daily}</div>
-                                <div class="stat-label">Min Daily</div>
+                                <div class="stat-value">${summary.min_monthly}</div>
+                                <div class="stat-label">Min Monthly</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${summary.max_daily}</div>
-                                <div class="stat-label">Max Daily</div>
+                                <div class="stat-value">${summary.max_monthly}</div>
+                                <div class="stat-label">Max Monthly</div>
                             </div>
                         </div>
 
-                        <h3>📅 Daily Predictions</h3>
+                        <h3>📅 Monthly Predictions</h3>
                         <table class="forecast-table">
                             <thead>
                                 <tr>
-                                    <th>Day</th>
-                                    <th>Date</th>
+                                    <th>Month</th>
+                                    <th>Period</th>
                                     <th>Predicted Subscriptions</th>
                                 </tr>
                             </thead>
@@ -564,8 +564,8 @@
                     data.forecast.forEach(item => {
                         html += `
                             <tr>
-                                <td>${item.day}</td>
-                                <td>${item.date}</td>
+                                <td>${item.month}</td>
+                                <td>${item.period}</td>
                                 <td>${item.prediction}</td>
                             </tr>
                         `;
