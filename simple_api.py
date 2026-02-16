@@ -206,7 +206,8 @@ class ForecastingHandler(BaseHTTPRequestHandler):
                 return
 
             start_date = pd.to_datetime(start_date_str)
-            monthly_forecasts = []
+            total_forecast = 0.0
+            total_days = 0
 
             for month_offset in range(months):
                 # Calculate the month start and end dates
@@ -224,42 +225,34 @@ class ForecastingHandler(BaseHTTPRequestHandler):
                     monthly_predictions.append(float(prediction))
                     current_date += timedelta(days=1)
 
-                # Calculate monthly total
+                # Add monthly total to overall total
                 monthly_total = sum(monthly_predictions)
+                total_forecast += monthly_total
+                total_days += len(monthly_predictions)
 
-                # Format period string
-                period_str = f"{month_start.strftime('%B %Y')}"
-
-                monthly_forecasts.append({
-                    'month': month_offset + 1,
-                    'period': period_str,
-                    'prediction': round(monthly_total, 2),
-                    'days_in_month': len(monthly_predictions),
-                    'avg_daily': round(monthly_total / len(monthly_predictions), 2) if monthly_predictions else 0
-                })
-
-            # Calculate summary statistics
-            monthly_totals = [f['prediction'] for f in monthly_forecasts]
-            total_subscriptions = sum(monthly_totals)
-            avg_monthly = total_subscriptions / len(monthly_totals) if monthly_totals else 0
-            min_monthly = min(monthly_totals) if monthly_totals else 0
-            max_monthly = max(monthly_totals) if monthly_totals else 0
-
+            # Calculate period information
             end_month = start_date + pd.DateOffset(months=months-1)
-            end_period = f"{end_month.strftime('%B %Y')}"
+            period_start = f"{start_date.strftime('%B %Y')}"
+            period_end = f"{end_month.strftime('%B %Y')}"
 
             summary = {
-                'total_subscriptions': round(total_subscriptions, 2),
-                'avg_monthly': round(avg_monthly, 2),
-                'min_monthly': round(min_monthly, 2),
-                'max_monthly': round(max_monthly, 2),
+                'total_subscriptions': round(total_forecast, 2),
+                'total_days': total_days,
+                'months': months,
                 'start_date': start_date_str,
-                'end_period': end_period,
-                'months': months
+                'period_start': period_start,
+                'period_end': period_end,
+                'avg_daily': round(total_forecast / total_days, 2) if total_days > 0 else 0
             }
 
             response = {
-                'forecast': monthly_forecasts,  # Changed from 'forecasts' to 'forecast' to match JS expectation
+                'forecast': {
+                    'total_subscriptions': round(total_forecast, 2),
+                    'period': f"{period_start} to {period_end}" if months > 1 else period_start,
+                    'months': months,
+                    'total_days': total_days,
+                    'avg_daily': round(total_forecast / total_days, 2) if total_days > 0 else 0
+                },
                 'summary': summary,
                 'start_date': start_date_str,
                 'months': months,

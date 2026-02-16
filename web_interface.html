@@ -219,6 +219,23 @@
             font-weight: 600;
         }
 
+        .forecast-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .forecast-summary p {
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .forecast-summary strong {
+            color: #333;
+        }
+
         .summary-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -527,54 +544,34 @@
 
                     // Summary stats
                     const summary = data.summary;
+                    const forecast = data.forecast;
                     let html = `
                         <h3>📊 Forecast Summary</h3>
                         <div class="summary-stats">
                             <div class="stat-card">
-                                <div class="stat-value">${summary.total_subscriptions}</div>
+                                <div class="stat-value">${forecast.total_subscriptions}</div>
                                 <div class="stat-label">Total Subscriptions</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${summary.avg_monthly}</div>
-                                <div class="stat-label">Avg Monthly</div>
+                                <div class="stat-value">${forecast.months} months</div>
+                                <div class="stat-label">Period Length</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${summary.min_monthly}</div>
-                                <div class="stat-label">Min Monthly</div>
+                                <div class="stat-value">${forecast.total_days} days</div>
+                                <div class="stat-label">Total Days</div>
                             </div>
                             <div class="stat-card">
-                                <div class="stat-value">${summary.max_monthly}</div>
-                                <div class="stat-label">Max Monthly</div>
+                                <div class="stat-value">${forecast.avg_daily}</div>
+                                <div class="stat-label">Avg Daily</div>
                             </div>
                         </div>
 
-                        <h3>📅 Monthly Predictions</h3>
-                        <table class="forecast-table">
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Period</th>
-                                    <th>Predicted Subscriptions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                    `;
-
-                    // Forecast table
-                    data.forecast.forEach(item => {
-                        html += `
-                            <tr>
-                                <td>${item.month}</td>
-                                <td>${item.period}</td>
-                                <td>${item.prediction}</td>
-                            </tr>
-                        `;
-                    });
-
-                    html += `
-                            </tbody>
-                        </table>
-                        <p><small>Period: ${summary.start_date} to ${summary.end_date}</small></p>
+                        <h3>📅 Forecast Period</h3>
+                        <div class="forecast-summary">
+                            <p><strong>Period:</strong> ${forecast.period}</p>
+                            <p><strong>Total Forecast:</strong> ${forecast.total_subscriptions} subscriptions</p>
+                            <p><strong>Average per Day:</strong> ${forecast.avg_daily} subscriptions</p>
+                        </div>
                     `;
 
                     resultDiv.innerHTML = html;
